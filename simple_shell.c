@@ -22,7 +22,7 @@ int (*builtin_func[]) (char **) = {
 	&lsh_help,
 	&lsh_exit
 };
-int lsh _num_builtins()
+int lsh_num_builtins()
 {
 	return (sizeof(builtin_str )/ sizeof(char**))
 }
@@ -181,7 +181,7 @@ char *lsh_read_line(void)
 		c = getchar();
 
 		//if we hit an EOF, replace it with a null character and return
-		if (c == EOF || X == '\n')
+		if (c == EOF || c == '\n')
 		{
 			buffer[position] = '\0';
 			return (buffer);
