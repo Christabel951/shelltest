@@ -1,3 +1,6 @@
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -5,10 +8,11 @@
 #define TOK_DELIM " \t\r\n"
 #define RED "\033[0;31m"
 #define RESET "\e[0m"
+#define TK_BUFF_SIZE 1024
 
 char *read_line();
 char **split_line(char *);
-int dash_exit(char **);
+int dash_exit(void);
 int dash_execute(char **);
 /**
  * Executing commands
@@ -45,7 +49,7 @@ int dash_execute(char ** args)
  * Exiting the shell
  * Return: Value 0 triggers successful program exit
  */
-int dash_exit(char **args)
+int dash_exit(void)
 {
 	return (0);
 }
@@ -55,7 +59,7 @@ int dash_exit(char **args)
  * First call: str1 = strtok(string_to_be_tokenized, delimiter)
  * Subsequent calls: strtok(NULL, delimiter)
  */
-char **split_line(char *line)
+char **split_lines(char *line)
 {
 	int buffsize = 1024, position = 0;
 	char **tokens = malloc(sizeof(char*) * buffsize);
@@ -99,10 +103,10 @@ char **split_line(char *line)
  * To stop the loop, we check for EOF and \n
  * Common error checks - memory allocation
  */
-*char read_line(void)
+char *read_line(void)
 {
 	int buffsize = 1024, position = 0, c;
-	char *buffer = malloc(sizeof(char) * bufsize);
+	char *buffer = malloc(sizeof(char) * buffsize);
 
 	if (!buffer)
 	{
@@ -159,10 +163,14 @@ void loop(void)
 	{
 		printf("> ");
 		line  = read_line();
-		flag = 0;
 		args = split_lines(line);
-		status = dash_launch(args);
+		status = dash_execute(args);
 		free(line);
 		free(args);
 	} while (status);
+}
+int main(void)
+{
+	loop();
+	return (0);
 }
